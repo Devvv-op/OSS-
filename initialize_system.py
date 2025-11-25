@@ -1,6 +1,6 @@
-# =============================================================================
-# Smart Waste Management System - Database Initializer (FIXED VERSION)
-# =============================================================================
+
+# Smart Waste Management System - Database Initializer 
+
 
 import sqlite3
 import random
@@ -8,9 +8,9 @@ from datetime import datetime, timedelta
 import os
 from database import WasteDatabase
 
-# =============================================================================
+
 # Utility: Safe Timestamp Formatting
-# =============================================================================
+
 
 def ts():
     """Return current timestamp as string"""
@@ -20,29 +20,29 @@ def ts_offset(hours):
     """Return timestamp offset by hours as string"""
     return (datetime.now() - timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
 
-# =============================================================================
+
 # MAIN INITIALIZER
-# =============================================================================
+
 
 def initialize():
     print("\n==============================================")
-    print("  🗄️  INITIALIZING SMART WASTE SYSTEM")
+    print("  INITIALIZING SMART WASTE SYSTEM")
     print("==============================================\n")
 
     # Connect DB
     db = WasteDatabase("waste_management.db")
 
-    print("🔧 STEP 1: Creating Tables...")
+    print("STEP 1: Creating Tables...")
     db.initialize_database()
 
-    print("✔ Database ready!\n")
+    print("Database ready!\n")
 
-    # -------------------------------------------------------------
+   
     # STEP 4: Generate Sample Bins + Readings + Complaints
-    # -------------------------------------------------------------
+    
 
     print("==============================================")
-    print("📊 STEP 4: Generating Sample Data...")
+    print("STEP 4: Generating Sample Data...")
     print("==============================================\n")
 
     try:
@@ -65,14 +65,13 @@ def initialize():
             db.insert_bin(data)
             bin_list.append(data["bin_id"])
 
-        print("✔ 50 bins inserted successfully!\n")
+        print("50 bins inserted successfully!\n")
 
     except Exception as e:
-        print("❌ Error generating bins:", e)
+        print("Error generating bins:", e)
 
-    # -------------------------------------------------------------
+    
     # SAMPLE READINGS
-    # -------------------------------------------------------------
 
     try:
         print("→ Generating sensor readings (last 7 days)...")
@@ -93,11 +92,10 @@ def initialize():
         print("✔ Sensor readings inserted!\n")
 
     except Exception as e:
-        print("❌ Error inserting readings:", e)
+        print("Error inserting readings:", e)
 
-    # -------------------------------------------------------------
+    
     # SAMPLE COMPLAINTS
-    # -------------------------------------------------------------
 
     try:
         print("→ Creating sample citizen complaints...")
@@ -122,14 +120,14 @@ def initialize():
         print("✔ Sample complaints inserted!\n")
 
     except Exception as e:
-        print("❌ Error inserting complaints:", e)
+        print("Error inserting complaints:", e)
 
-    # -------------------------------------------------------------
+   
     # DONE
-    # -------------------------------------------------------------
+    
 
     print("==============================================")
-    print("🎉 SYSTEM INITIALIZATION COMPLETE!")
+    print("SYSTEM INITIALIZATION COMPLETE!")
     print("==============================================\n")
     print("You can now run:")
     print("➡ streamlit run app.py")
@@ -139,3 +137,4 @@ def initialize():
 # Run initializer
 if __name__ == "__main__":
     initialize()
+
