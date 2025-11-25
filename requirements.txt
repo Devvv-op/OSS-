@@ -1,0 +1,49 @@
+# Smart Waste Management System V2.0 - Requirements
+# Python 3.8+ required
+
+# Core Data Processing
+pandas==2.1.0
+numpy==1.25.0
+
+# Visualization
+matplotlib==3.7.0
+seaborn==0.12.0
+plotly==5.17.0
+
+# Web Dashboard
+streamlit==1.28.0
+streamlit-folium==0.13.0
+folium==0.14.0
+
+# Machine Learning - Traditional Models
+scikit-learn==1.3.0
+xgboost==2.0.0
+lightgbm==4.0.0
+
+# Deep Learning - Image Classification
+tensorflow==2.13.0
+# OR use PyTorch (uncomment if preferred):
+# torch==2.0.1
+# torchvision==0.15.2
+
+# Image Processing
+Pillow==10.0.0
+
+# Database
+# SQLite3 is included in Python standard library
+
+# HTTP Requests (for weather API)
+requests==2.31.0
+
+# PDF Report Generation
+reportlab==4.0.5
+
+# Optional: MongoDB support (if using MongoDB instead of SQLite)
+# pymongo==4.5.0
+
+# Optional: Additional utilities
+scipy==1.11.0
+
+# Development Tools (optional)
+# jupyter==1.0.0
+# ipython==8.15.0
