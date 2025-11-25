@@ -1,10 +1,3 @@
-# =============================================================================
-# SMART WASTE MANAGEMENT SYSTEM V2.0 - WEB DASHBOARD (Fixed)
-# - Replaces deprecated streamlit calls
-# - Guards against missing columns
-# - Fixes complaint refresh, route flicker, and other reported bugs
-# =============================================================================
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -49,16 +42,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# =============================================================================
+
 # DATABASE CONNECTION HELPERS
-# =============================================================================
+
 
 @st.cache_resource
 def init_database():
     from database import WasteDatabase
     return WasteDatabase('waste_management.db')
 
-# We keep caching but allow explicit cache clearing after writes
+# We keep caching 
 @st.cache_data(ttl=300)
 def load_data():
     db = init_database()
@@ -81,9 +74,9 @@ def load_data():
 
     return bins_df, readings_df, complaints_df
 
-# =============================================================================
+
 # HELPER FUNCTIONS
-# =============================================================================
+
 
 def create_map(bins_df):
     """Create interactive map with bin locations"""
@@ -157,25 +150,25 @@ def create_zone_comparison(readings_df, bins_df=None):
     fig.update_layout(xaxis_title='Zone', yaxis_title='Average Fill (%)', height=400)
     return fig
 
-# =============================================================================
+
 # SIDEBAR NAVIGATION
-# =============================================================================
+
 
 st.sidebar.title("🗑️ Smart Waste Management")
 st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "Navigation",
-    ["📊 Dashboard", "🗺️ Bin Map", "📈 Analytics", "🤖 ML Models",
-     "🖼️ Image Classifier", "📝 Complaints", "🚛 Route Planning", "⚙️ Admin Panel"]
+    ["Dashboard", "Bin Map", "Analytics", "ML Models",
+     "Image Classifier", "Complaints", "Route Planning", "Admin Panel"]
 )
 
-# =============================================================================
-# PAGE: DASHBOARD
-# =============================================================================
 
-if page == "📊 Dashboard":
-    st.title("📊 Smart Waste Management Dashboard")
+# PAGE: DASHBOARD
+
+
+if page == "Dashboard":
+    st.title("Smart Waste Management Dashboard")
     st.markdown("---")
 
     bins_df, readings_df, complaints_df = load_data()
@@ -230,7 +223,7 @@ if page == "📊 Dashboard":
         st.plotly_chart(fig2, use_container_width=False, width='stretch')
 
     st.markdown("---")
-    st.subheader("🚨 Recent Alerts")
+    st.subheader("Recent Alerts")
     # Make the alert boxes black background (custom)
     critical_bins_df = bins_with_fill[bins_with_fill['current_fill'] >= 80].sort_values('current_fill', ascending=False)
     if len(critical_bins_df) > 0:
@@ -244,14 +237,14 @@ if page == "📊 Dashboard":
             """
             st.markdown(html, unsafe_allow_html=True)
     else:
-        st.success("✅ All bins are below alert threshold!")
+        st.success("All bins are below alert threshold!")
 
-# =============================================================================
+
 # PAGE: BIN MAP
-# =============================================================================
 
-elif page == "🗺️ Bin Map":
-    st.title("🗺️ Bin Location Map")
+
+elif page == "Bin Map":
+    st.title("Bin Location Map")
     st.markdown("Interactive map showing all waste bin locations")
     st.markdown("---")
 
@@ -289,22 +282,22 @@ elif page == "🗺️ Bin Map":
         bin_map = create_map(filtered_bins)
         st_folium(bin_map, width=1400, height=600)
         st.markdown("---")
-        st.subheader("📋 Filtered Bins Summary")
+        st.subheader("Filtered Bins Summary")
         st.dataframe(filtered_bins[['bin_id', 'location', 'zone', 'waste_type', 'capacity', 'current_fill']] if not filtered_bins.empty else pd.DataFrame(), height=300)
     else:
         st.info("No bins match the selected filters")
 
-# =============================================================================
-# PAGE: ANALYTICS
-# =============================================================================
 
-elif page == "📈 Analytics":
-    st.title("📈 Advanced Analytics")
+# PAGE: ANALYTICS
+
+
+elif page == "Analytics":
+    st.title("Advanced Analytics")
     st.markdown("---")
 
     bins_df, readings_df, _ = load_data()
 
-    tab1, tab2, tab3 = st.tabs(["📊 Time Series", "🔥 Heatmaps", "📉 Trends"])
+    tab1, tab2, tab3 = st.tabs(["Time Series", "Heatmaps", "Trends"])
 
     with tab1:
         st.subheader("Time Series Analysis")
@@ -348,7 +341,7 @@ elif page == "📈 Analytics":
             if 'zone' in readings_df.columns:
                 zone_stats = readings_df.groupby('zone').agg({'fill_percentage': ['mean', 'max', 'std']}).round(2)
             elif not bins_df.empty:
-                # try to join latest readings with bins for zone stats
+                # join latest readings with bins for zone stats
                 latest = readings_df.groupby('bin_id').tail(1)
                 joined = latest.merge(bins_df[['bin_id', 'zone']], on='bin_id', how='left')
                 if 'zone' in joined.columns:
@@ -360,15 +353,14 @@ elif page == "📈 Analytics":
             else:
                 st.info("No reading data available for zone comparison yet.")
 
-# =============================================================================
-# PAGE: ML MODELS
-# =============================================================================
 
-elif page == "🤖 ML Models":
-    st.title("🤖 Machine Learning Models")
+# PAGE: ML MODELS
+
+elif page == "ML Models":
+    st.title("Machine Learning Models")
     st.markdown("---")
 
-    # Show mock model results or integrate with ml_models.py
+   
     model_results = pd.DataFrame({
         'Model': ['Linear Regression', 'Ridge Regression', 'Decision Tree',
                   'Random Forest', 'XGBoost', 'LightGBM'],
@@ -382,12 +374,12 @@ elif page == "🤖 ML Models":
     st.subheader("Detailed Metrics")
     st.dataframe(model_results)
 
-# =============================================================================
-# PAGE: IMAGE CLASSIFIER
-# =============================================================================
 
-elif page == "🖼️ Image Classifier":
-    st.title("🖼️ Waste Image Classifier")
+# PAGE: IMAGE CLASSIFIER
+
+
+elif page == "Image Classifier":
+    st.title("Waste Image Classifier")
     st.markdown("Upload an image and classify it using the trained model (if available).")
 
     uploaded_image = st.file_uploader("Upload image", type=['jpg', 'jpeg', 'png'])
@@ -423,15 +415,14 @@ elif page == "🖼️ Image Classifier":
             except Exception as e:
                 st.error(f"Prediction failed: {str(e)}")
 
-# =============================================================================
 # PAGE: COMPLAINTS
-# =============================================================================
 
-elif page == "📝 Complaints":
-    st.title("📝 Citizen Complaint Management")
+
+elif page == "Complaints":
+    st.title("Citizen Complaint Management")
     st.markdown("---")
 
-    tab1, tab2 = st.tabs(["📋 View Complaints", "➕ New Complaint"])
+    tab1, tab2 = st.tabs(["View Complaints", "New Complaint"])
 
     db = init_database()  # get direct db object for writes
 
@@ -506,17 +497,17 @@ elif page == "📝 Complaints":
                         st.cache_data.clear()
                     except Exception:
                         pass
-                    st.success(f"✅ Complaint submitted successfully! ID: {complaint_id}")
+                    st.success(f"Complaint submitted successfully! ID: {complaint_id}")
                     st.experimental_rerun()
                 else:
                     st.error("Please fill all required fields")
 
-# =============================================================================
-# PAGE: ROUTE PLANNING
-# =============================================================================
 
-elif page == "🚛 Route Planning":
-    st.title("🚛 Optimized Collection Routes")
+# PAGE: ROUTE PLANNING
+
+
+elif page == "Route Planning":
+    st.title("Optimized Collection Routes")
     st.markdown("---")
     bins_df, readings_df, _ = load_data()
 
@@ -552,14 +543,14 @@ elif page == "🚛 Route Planning":
         else:
             st.session_state['route'] = {'route_df': pd.DataFrame(), 'total_distance': 0.0}
 
-    # show route if available in session state (prevents flicker)
+    # show route if available in session state 
     if st.session_state.get('route'):
         route_info = st.session_state['route']
         route = route_info['route_df']
         if route is None or route.empty:
-            st.info("✅ No bins require collection at this threshold")
+            st.info("No bins require collection at this threshold")
         else:
-            st.subheader(f"📍 {len(route)} bins require collection")
+            st.subheader(f"{len(route)} bins require collection")
             total_distance = route_info.get('total_distance', 0.0)
             col1, col2, col3 = st.columns(3)
             col1.metric("Bins to Collect", len(route))
@@ -571,15 +562,15 @@ elif page == "🚛 Route Planning":
             route_map = create_map(route)
             st_folium(route_map, width=1400, height=500)
 
-# =============================================================================
-# PAGE: ADMIN PANEL (trimmed per request - removed Add Bin and Generate Report options)
-# =============================================================================
 
-elif page == "⚙️ Admin Panel":
-    st.title("⚙️ System Administration")
+# PAGE: ADMIN PANEL 
+
+
+elif page == "Admin Panel":
+    st.title("System Administration")
     st.markdown("---")
 
-    tabs = st.tabs(["📊 System Stats", "🔧 Settings"])
+    tabs = st.tabs(["System Stats", "Settings"])
     with tabs[0]:
         bins_df, readings_df, complaints_df = load_data()
         col1, col2, col3 = st.columns(3)
@@ -608,15 +599,16 @@ elif page == "⚙️ Admin Panel":
         email_notif = st.checkbox("Email Notifications", value=True)
         sms_notif = st.checkbox("SMS Notifications", value=False)
         if st.button("Save Settings"):
-            st.success("✅ Settings saved successfully!")
+            st.success("Settings saved successfully!")
 
-# =============================================================================
+
 # FOOTER
-# =============================================================================
+
 
 st.sidebar.markdown("---")
 st.sidebar.info(
     "**Smart Waste Management System v2.0**\n\n"
-    "Developed by: JIIT Team\n\n"
+    "Developed by: Group 1 B1 batch\n\n"
     "© 2025-2026"
 )
+
