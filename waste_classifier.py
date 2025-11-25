@@ -1,8 +1,3 @@
-# =============================================================================
-# WASTE IMAGE CLASSIFICATION MODULE
-# Uses CNN (ResNet50) for waste type classification (Kaggle dataset: O, R)
-# =============================================================================
-
 import os
 import numpy as np
 import tensorflow as tf
@@ -33,9 +28,9 @@ class WasteImageClassifier:
         self.num_classes = len(self.classes)
         self.model = None
 
-    # -------------------------------------------------------------------------
-    # MODEL BUILDING
-    # -------------------------------------------------------------------------
+    
+    #MODEL BUILDING
+   
     def build_model(self):
         """Build transfer learning model using ResNet50"""
 
@@ -58,8 +53,8 @@ class WasteImageClassifier:
         x = Dense(256, activation='relu')(x)
         x = Dropout(0.3)(x)
 
-        # 🔴 THIS is the line you asked about:
-        # Output layer = number of classes (2 for O, R)
+        
+        
         predictions = Dense(self.num_classes, activation='softmax')(x)
 
         # Create final model
@@ -77,9 +72,9 @@ class WasteImageClassifier:
 
         return self.model
 
-    # -------------------------------------------------------------------------
+    
     # DATA GENERATORS
-    # -------------------------------------------------------------------------
+    
     def create_data_generators(self, train_dir, val_dir, batch_size=32):
         """Create data generators for training"""
 
@@ -118,9 +113,9 @@ class WasteImageClassifier:
         print("Class indices:", train_generator.class_indices)
         return train_generator, val_generator
 
-    # -------------------------------------------------------------------------
-    # TRAINING / FINE-TUNING
-    # -------------------------------------------------------------------------
+    
+    #TRAINING / FINE-TUNING
+    
     def train(self, train_generator, val_generator, epochs=20):
         """Train the model"""
 
@@ -174,9 +169,9 @@ class WasteImageClassifier:
 
         return history
 
-    # -------------------------------------------------------------------------
-    # INFERENCE
-    # -------------------------------------------------------------------------
+    
+    #INFERENCE
+    
     def predict_image(self, image_path):
         """Predict waste type from a single image"""
 
@@ -197,9 +192,10 @@ class WasteImageClassifier:
             'confidence': confidence,
         }
 
-    # -------------------------------------------------------------------------
+   
     # SAVE / LOAD
-    # -------------------------------------------------------------------------
+
+    
     def save_model(self, filepath='models/waste_classifier_final.h5'):
         """Save trained model"""
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -212,22 +208,17 @@ class WasteImageClassifier:
         print(f"✓ Model loaded from {filepath}")
 
 
-# =============================================================================
+
 # MAIN: TRAIN ON KAGGLE DATASET
-# =============================================================================
 
 if __name__ == "__main__":
     # 1. Create classifier (2 classes: O, R)
     classifier = WasteImageClassifier(img_size=224)
 
-    # ⛔ IMPORTANT: CHANGE THESE TWO PATHS ACCORDING TO YOUR FOLDER
-    # Example if you extracted like: C:\Users\yasha\OneDrive\Desktop\OSS\archive\DATASET\TRAIN
-    # and you are running python from C:\Users\yasha\OneDrive\Desktop\OSS
+    
     train_dir = r"archive\DATASET\TRAIN"
     val_dir   = r"archive\DATASET\TEST"
-    # You can also use forward slashes:
-    # train_dir = "archive/DATASET/TRAIN"
-    # val_dir   = "archive/DATASET/TEST"
+   
 
     # 2. Build model
     model = classifier.build_model()
